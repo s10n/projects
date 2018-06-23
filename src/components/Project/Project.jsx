@@ -1,14 +1,31 @@
 import React from 'react'
-import { string } from 'prop-types'
+import { string, object, func } from 'prop-types'
+import Task from '../Task/Task'
+import TaskAdd from '../Task/TaskAdd'
 
-const propTypes = { icon: string.isRequired, name: string.isRequired }
+const propTypes = {
+  icon: string.isRequired,
+  name: string.isRequired,
+  tasks: object,
+  addTask: func.isRequired
+}
 
-const Project = ({ icon, name }) => (
+const defaultProps = {
+  tasks: {}
+}
+
+const Project = ({ icon, name, tasks, addTask }) => (
   <article>
     <h1>{icon + name}</h1>
+    <section>{Object.entries(tasks).map(renderTask)}</section>
+    <TaskAdd onSubmit={addTask} />
   </article>
 )
 
 Project.propTypes = propTypes
+Project.defaultProps = defaultProps
 
 export default Project
+
+/* render */
+const renderTask = ([key, value]) => <Task {...value} key={key} />

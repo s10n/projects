@@ -7,25 +7,37 @@ import Main from './Main'
 
 class App extends Component {
   static propTypes = { db: object.isRequired }
-  state = { projects: {} }
+  state = {}
 
   componentDidMount() {
-    const onValue = snap => this.setState({ projects: snap.val() || {} })
-    const projectsRef = this.props.db.ref('projects/')
-    projectsRef.on('value', onValue)
+    const projectsRef = this.props.db.ref()
+    projectsRef.on('value', snap => this.setState(snap.val() || {}))
   }
 
-  addProject = data =>
-    this.props.db.ref('projects/' + uuidv4()).set(data, handleError)
+  fn = () => {
+    const set = ref => data => this.props.db.ref(ref).set(data, handleError)
+
+    return {
+      addProject: set(`projects/${uuidv4()}`),
+      addTask: id => set(`tasks/${id}/${uuidv4()}`)
+    }
+  }
 
   render() {
+    const fn = this.fn()
+
     return (
       <Fragment>
-        <Header fn={{ addProject: this.addProject }} />
-        <Main projects={this.state.projects} />
+        <Header fn={fn} style={style.header} />
+        <Main {...this.state} fn={fn} style={style.main} />
       </Fragment>
     )
   }
+}
+
+const style = {
+  header: { flex: 'none' },
+  main: { flex: 1 }
 }
 
 export default App
