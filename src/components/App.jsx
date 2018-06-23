@@ -7,19 +7,27 @@ import Main from './Main'
 
 class App extends Component {
   static propTypes = { db: object.isRequired }
-  state = {}
+
+  InitialState = { projects: {}, tasks: {} }
+  state = this.InitialState
 
   componentDidMount() {
+    const onValue = snap => this.setState(snap.val() || this.InitialState)
     const projectsRef = this.props.db.ref()
-    projectsRef.on('value', snap => this.setState(snap.val() || {}))
+    projectsRef.on('value', onValue)
   }
 
   fn = () => {
-    const set = ref => data => this.props.db.ref(ref).set(data, handleError)
+    const set = (ref, list) => data => {
+      const priority = Object.keys(list).length
+      return this.props.db.ref(ref).set({ ...data, priority }, handleError)
+    }
+
+    const { projects, tasks } = this.state
 
     return {
-      addProject: set(`projects/${uuidv4()}`),
-      addTask: id => set(`tasks/${id}/${uuidv4()}`)
+      addProject: set(`projects/${uuidv4()}`, projects),
+      addTask: id => set(`tasks/${id}/${uuidv4()}`, tasks[id] || {})
     }
   }
 
