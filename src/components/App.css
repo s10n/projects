@@ -1,0 +1,10 @@
+html,
+body,
+#projects {
+  height: 100%;
+}
+
+#projects {
+  display: flex;
+  flex-direction: column;
+}
