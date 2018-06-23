@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "firebase": "^5.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4"
@@ -19,10 +20,10 @@
     "eject": "react-scripts eject",
     "precommit": "lint-staged"
   },
-   "lint-staged": {
-     "src/**/*.{js,jsx,json,css}": [
-       "prettier --single-quote --no-semi --write",
-       "git add"
-     ]
-   }
+  "lint-staged": {
+    "src/**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
+  }
 }
