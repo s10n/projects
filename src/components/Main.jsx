@@ -1,6 +1,7 @@
 import React from 'react'
 import { object } from 'prop-types'
 import { fn } from '../constants/propTypes'
+import { sortWith } from '../utils'
 import Project from './Project/Project'
 
 const propTypes = {
@@ -15,18 +16,15 @@ const defaultProps = {
 }
 
 const Main = ({ projects, tasks, fn, style: variant }) => {
-  const sortProjects = ([keyA, projectA], [keyB, projectB]) =>
-    projectA.priority - projectB.priority
-
-  const renderProject = ([key, project]) => {
-    const props = { ...project, tasks: tasks[key], addTask: fn.addTask(key) }
-    return <Project {...props} key={key} />
+  const renderProject = ([id, project]) => {
+    const props = { ...project, id, tasks: tasks[id], addTask: fn.addTask(id) }
+    return <Project {...props} key={id} />
   }
 
   return (
     <main style={{ ...style, ...variant }}>
       {Object.entries(projects)
-        .sort(sortProjects)
+        .sort(sortWith('priority'))
         .map(renderProject)}
     </main>
   )
