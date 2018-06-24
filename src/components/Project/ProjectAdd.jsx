@@ -7,7 +7,7 @@ const defaultProps = { style: {} }
 
 const ProjectAdd = ({ style: variant, onSubmit }) => (
   <Form
-    fields={[{ name: 'icon', width: '2rem' }, { name: 'name' }]}
+    fields={[{ name: 'icon', style: { width: '2rem' } }, { name: 'name' }]}
     style={{ ...variant, display: 'flex' }}
     onSubmit={onSubmit}
     shouldNotEmptyOnSubmit

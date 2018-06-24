@@ -8,7 +8,10 @@ const Signin = ({ signin }) => (
   <Form
     title="Sign in"
     style={style}
-    fields={[{ name: 'email' }, { name: 'password', type: 'password' }]}
+    fields={[
+      { name: 'email', autoComplete: 'email' },
+      { name: 'password', type: 'password', autoComplete: 'password' }
+    ]}
     onSubmit={signin}
   />
 )

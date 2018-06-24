@@ -4,8 +4,6 @@ import { bool, string, arrayOf, object, shape, func } from 'prop-types'
 class Form extends Component {
   fields = {
     name: string.isRequired,
-    type: string,
-    value: string,
     textarea: bool
   }
 
@@ -47,18 +45,19 @@ class Form extends Component {
     !this.props.shouldNotEmptyOnSubmit ||
     Object.values(this.trim()).every(Boolean)
 
+  handleSubmit = e => e.preventDefault()
+
   submit = () => {
     const { onSubmit, shouldResetOnSubmit } = this.props
     onSubmit(this.trim())
     shouldResetOnSubmit && this.reset()
   }
 
-  renderField = ({ name, textarea, width, ...rest }) => {
+  renderField = ({ name, textarea, ...rest }) => {
     const field = Object.assign(
       {
         name,
         value: this.state[name],
-        style: { width },
         onChange: this.setValue,
         key: name,
         ...rest
@@ -74,7 +73,7 @@ class Form extends Component {
   render() {
     const { title, fields, style: variant } = this.props
     return (
-      <form style={variant}>
+      <form style={variant} onSubmit={this.handleSubmit}>
         {title && <h1>{title}</h1>}
         {fields.map(this.renderField)}
       </form>
