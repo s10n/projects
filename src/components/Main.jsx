@@ -19,6 +19,7 @@ const Main = ({ list, projects, fn, style: variant }) => {
     const props = {
       ...projects[id],
       id,
+      style: style.project,
       onAddTask: fn.addTask({ project: id })
     }
 
@@ -31,6 +32,10 @@ const Main = ({ list, projects, fn, style: variant }) => {
 Main.propTypes = propTypes
 Main.defaultProps = defaultProps
 
-const style = { display: 'flex' }
+const style = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  project: { width: 100 / 3 + '%' }
+}
 
 export default Main

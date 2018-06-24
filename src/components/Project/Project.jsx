@@ -1,12 +1,20 @@
 import React from 'react'
-import { string } from 'prop-types'
+import { string, object } from 'prop-types'
 import Tasks from '../Task/Tasks'
 import TaskContext from '../Task/TaskContext'
 
-const propTypes = { icon: string.isRequired, name: string.isRequired }
+const propTypes = {
+  icon: string.isRequired,
+  name: string.isRequired,
+  style: object
+}
 
-const Project = ({ icon, name, ...rest }) => (
-  <article>
+const defaultProps = {
+  style: {}
+}
+
+const Project = ({ icon, name, style: variant, ...rest }) => (
+  <article style={variant}>
     <h1>{icon + name}</h1>
     <TaskContext.Consumer>
       {({ setCurrent }) => <Tasks {...rest} onTaskClick={setCurrent} />}
@@ -15,5 +23,6 @@ const Project = ({ icon, name, ...rest }) => (
 )
 
 Project.propTypes = propTypes
+Project.defaultProps = defaultProps
 
 export default Project
