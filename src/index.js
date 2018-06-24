@@ -1,7 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { db } from './firebase'
+import { auth, db } from './firebase'
 import './index.css'
 import App from './components/App'
 
-ReactDOM.render(<App db={db} />, document.getElementById('projects'))
+ReactDOM.render(
+  <App auth={auth} db={db} />,
+  document.getElementById('projects')
+)

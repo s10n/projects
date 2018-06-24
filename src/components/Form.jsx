@@ -1,17 +1,26 @@
 import React, { Component } from 'react'
-import { bool, string, arrayOf, shape, func } from 'prop-types'
+import { bool, string, arrayOf, object, shape, func } from 'prop-types'
 
 class Form extends Component {
-  fields = { name: string.isRequired, type: string, value: string }
+  fields = {
+    name: string.isRequired,
+    type: string,
+    value: string,
+    textarea: bool
+  }
 
   static propTypes = {
+    title: string,
     fields: arrayOf(shape(this.fields)).isRequired,
+    style: object,
     shouldNotEmptyOnSubmit: bool,
     shouldResetOnSubmit: bool,
     onSubmit: func.isRequired
   }
 
   static defaultProps = {
+    title: '',
+    style: {},
     shouldNotEmptyOnSubmit: false,
     shouldResetOnSubmit: false
   }
@@ -44,20 +53,32 @@ class Form extends Component {
     shouldResetOnSubmit && this.reset()
   }
 
-  renderField = ({ name, type }) => {
-    const isTextarea = type === 'textarea'
+  renderField = ({ name, textarea, width, ...rest }) => {
     const field = Object.assign(
-      { name, value: this.state[name], onChange: this.setValue, key: name },
-      isTextarea
+      {
+        name,
+        value: this.state[name],
+        style: { width },
+        onChange: this.setValue,
+        key: name,
+        ...rest
+      },
+      textarea
         ? { onKeyDown: this.handleKeyDown }
         : { onKeyPress: this.handleEnter }
     )
 
-    return isTextarea ? <textarea {...field} /> : <input {...field} />
+    return textarea ? <textarea {...field} /> : <input {...field} />
   }
 
   render() {
-    return this.props.fields.map(this.renderField)
+    const { title, fields, style: variant } = this.props
+    return (
+      <form style={variant}>
+        {title && <h1>{title}</h1>}
+        {fields.map(this.renderField)}
+      </form>
+    )
   }
 }
 

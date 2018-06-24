@@ -42,6 +42,8 @@ small {
 button,
 input,
 textarea {
+  background-color: transparent;
+  border: 1px solid hsl(0, 0%, 80%);
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;

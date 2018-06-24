@@ -1,12 +1,14 @@
 import React from 'react'
-import { func } from 'prop-types'
+import { object, func } from 'prop-types'
 import Form from '../Form'
 
-const propTypes = { onSubmit: func.isRequired }
+const propTypes = { style: object, onSubmit: func.isRequired }
+const defaultProps = { style: {} }
 
-const ProjectAdd = ({ onSubmit }) => (
+const ProjectAdd = ({ style: variant, onSubmit }) => (
   <Form
-    fields={[{ name: 'icon' }, { name: 'name' }]}
+    fields={[{ name: 'icon', width: '2rem' }, { name: 'name' }]}
+    style={{ ...variant, display: 'flex' }}
     onSubmit={onSubmit}
     shouldNotEmptyOnSubmit
     shouldResetOnSubmit
@@ -14,5 +16,6 @@ const ProjectAdd = ({ onSubmit }) => (
 )
 
 ProjectAdd.propTypes = propTypes
+ProjectAdd.defaultProps = defaultProps
 
 export default ProjectAdd

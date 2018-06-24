@@ -7,12 +7,21 @@ const propTypes = { fn, style: object }
 const defaultProps = { style: {} }
 
 const Header = ({ fn, style: variant }) => (
-  <header style={variant}>
-    <ProjectAdd onSubmit={fn.addProject} />
+  <header style={{ ...style, ...variant }}>
+    <ProjectAdd style={style.input} onSubmit={fn.addProject} />
+    <button style={style.button} onClick={fn.signout}>
+      →
+    </button>
   </header>
 )
 
 Header.propTypes = propTypes
 Header.defaultProps = defaultProps
+
+const style = {
+  display: 'flex',
+  input: { flex: 1 },
+  button: { flex: 'none', width: '2rem' }
+}
 
 export default Header

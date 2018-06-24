@@ -10,7 +10,7 @@ const TaskDetails = ({ id, name, subtasks, description, fn }) => (
   <article>
     <h1>{name}</h1>
     <Form
-      fields={[{ name: 'description', type: 'textarea', value: description }]}
+      fields={[{ name: 'description', textarea: true, value: description }]}
       onSubmit={fn.editTask(id)}
     />
     <Tasks list={subtasks} onAddTask={fn.addTask({ task: id })} />

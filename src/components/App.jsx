@@ -8,20 +8,31 @@ import Header from './Header'
 import Main from './Main'
 import TaskDetails from './Task/TaskDetails'
 import TaskContext from './Task/TaskContext'
+import Signin from './Signin'
 
 Modal.setAppElement('#projects')
 class App extends Component {
-  static propTypes = { db: object.isRequired }
+  static propTypes = { auth: object.isRequired, db: object.isRequired }
 
   InitialData = { list: [], projects: {}, tasks: {} }
-  state = { ...this.InitialData, current: null, hover: null }
+  InitialUser = { user: null, idle: true }
+  InitialApp = { current: null, hover: null }
+  state = { ...this.InitialUser, ...this.InitialData, ...this.InitialApp }
 
   componentDidMount() {
+    const { auth, db } = this.props
     const onValue = snap => this.setState(snap.val() || this.InitialData)
-    const projectsRef = this.props.db.ref()
-    projectsRef.on('value', onValue)
+    const onAuth = user =>
+      this.setState({ user, idle: false }, () => db.ref().on('value', onValue))
+    auth.onAuthStateChanged(onAuth)
     document.addEventListener('keypress', this.handleKeyPress)
   }
+
+  /* Auth */
+  signin = ({ email, password }) =>
+    this.props.auth
+      .signInWithEmailAndPassword(email, password)
+      .catch(handleError)
 
   handleKeyPress = event =>
     this.state.hover &&
@@ -46,10 +57,11 @@ class App extends Component {
     const update = ref => data => db.ref(ref).update(data, handleError)
     const remove = ref => db.ref(ref).remove()
 
-    const { db } = this.props
+    const { auth, db } = this.props
     const { list, projects, tasks } = this.state
 
     return {
+      signout: () => auth.signOut(),
       addProject: data => {
         const id = uuidv4()
         set(`projects/${id}`)(data)
@@ -123,11 +135,11 @@ class App extends Component {
   resetHover = () => this.setHover()
 
   render() {
-    const { list, projects, tasks, current } = this.state
+    const { user, idle, list, projects, tasks, current } = this.state
     const fn = this.getFunctions()
     const currentTask = tasks[current]
 
-    return (
+    return idle ? null : user ? (
       <TaskContext.Provider value={this.getContext()}>
         <Header fn={fn} style={style.header} />
         <Main list={list} projects={projects} style={style.main} fn={fn} />
@@ -138,6 +150,8 @@ class App extends Component {
           </Modal>
         )}
       </TaskContext.Provider>
+    ) : (
+      <Signin signin={this.signin} />
     )
   }
 }
