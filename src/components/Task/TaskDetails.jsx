@@ -1,28 +1,30 @@
 import React from 'react'
-import { string } from 'prop-types'
+import { string, arrayOf } from 'prop-types'
 import { fn } from '../../constants/propTypes'
 import Form from '../Form'
-import TaskAdd from './TaskAdd'
+import Tasks from './Tasks'
 
 const propTypes = {
   id: string.isRequired,
   name: string.isRequired,
+  subtasks: arrayOf(string),
   description: string,
   fn
 }
 
 const defaultProps = {
+  subtasks: [],
   description: ''
 }
 
-const TaskDetails = ({ id, name, description, fn }) => (
+const TaskDetails = ({ id, name, subtasks, description, fn }) => (
   <article>
     <h1>{name}</h1>
     <Form
       fields={[{ name: 'description', type: 'textarea', value: description }]}
       onSubmit={fn.editTask(id)}
     />
-    <TaskAdd onSubmit={fn.addTask({ task: id })} />
+    <Tasks list={subtasks} onAddTask={fn.addTask({ task: id })} />
   </article>
 )
 

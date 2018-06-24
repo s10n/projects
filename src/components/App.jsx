@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { object } from 'prop-types'
 import uuidv4 from 'uuid/v4'
 import './App.css'
@@ -46,23 +46,21 @@ class App extends Component {
   resetCurrent = () => this.setCurrent()
 
   render() {
-    const { current, ...rest } = this.state
+    const { projects, tasks, current } = this.state
     const fn = this.fn()
-    const currentTask = rest.tasks[current]
+    const currentTask = tasks[current]
 
     return (
-      <Fragment>
+      <TaskContext.Provider value={{ tasks, setCurrent: this.setCurrent }}>
         <Header fn={fn} style={style.header} />
-        <TaskContext.Provider value={{ setCurrent: this.setCurrent }}>
-          <Main {...rest} fn={fn} style={style.main} />
-        </TaskContext.Provider>
+        <Main projects={projects} style={style.main} fn={fn} />
 
-        {!!currentTask && (
-          <Modal isOpen={!!currentTask} onRequestClose={this.resetCurrent}>
+        {!!current && (
+          <Modal isOpen={!!current} onRequestClose={this.resetCurrent}>
             <TaskDetails {...currentTask} id={current} fn={fn} />
           </Modal>
         )}
-      </Fragment>
+      </TaskContext.Provider>
     )
   }
 }

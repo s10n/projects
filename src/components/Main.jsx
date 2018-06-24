@@ -5,7 +5,6 @@ import Project from './Project/Project'
 
 const propTypes = {
   projects: object.isRequired,
-  tasks: object.isRequired,
   fn,
   style: object
 }
@@ -14,15 +13,9 @@ const defaultProps = {
   style: {}
 }
 
-const Main = ({ projects, tasks, fn, style: variant }) => {
+const Main = ({ projects, fn, style: variant }) => {
   const renderProject = ([id, project]) => {
-    const props = {
-      ...project,
-      id,
-      tasks,
-      addTask: fn.addTask({ project: id })
-    }
-
+    const props = { ...project, id, onAddTask: fn.addTask({ project: id }) }
     return <Project {...props} key={id} />
   }
 
