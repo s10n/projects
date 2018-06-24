@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { object } from 'prop-types'
-import { cond, equals } from 'ramda'
+import { cond, equals, without } from 'ramda'
 import uuidv4 from 'uuid/v4'
 import './App.css'
 import Modal from 'react-modal'
@@ -31,7 +31,8 @@ class App extends Component {
       [equals('2'), () => this.setImportant(-1)],
       [equals('='), () => this.setSize(1)],
       [equals('0'), () => this.setSize(null)],
-      [equals('-'), () => this.setSize(-1)]
+      [equals('-'), () => this.setSize(-1)],
+      [equals('c'), () => this.deleteTask()]
     ])(event.key)
 
   getContext = () => ({
@@ -43,6 +44,7 @@ class App extends Component {
   getFunctions = () => {
     const set = ref => data => db.ref(ref).set(data, handleError)
     const update = ref => data => db.ref(ref).update(data, handleError)
+    const remove = ref => db.ref(ref).remove()
 
     const { db } = this.props
     const { list, projects, tasks } = this.state
@@ -61,10 +63,38 @@ class App extends Component {
         project && update(`projects/${project}`)({ list: [...list, id] })
         task && update(`tasks/${task}`)({ subtasks: [...subtasks, id] })
       },
-      editTask: id => update(`tasks/${id}`)
+      editTask: id => update(`tasks/${id}`),
+      deleteTask: id => {
+        const find = (object, key) =>
+          Object.entries(object).find(
+            ([_, value]) => value[key] && value[key].includes(id)
+          )
+
+        const withoutId = without(id)
+
+        /* 상위 프로젝트의 목록에서 제거 */
+        const [projectId, project] = find(projects, 'list') || []
+        projectId &&
+          update(`projects/${projectId}`)({ list: withoutId(project.list) })
+
+        /* 상위 태스크의 서브태스크에서 제거 */
+        const [taskId, task] = find(tasks, 'subtasks') || []
+        taskId &&
+          update(`tasks/${taskId}`)({ subtasks: withoutId(task.subtasks) })
+
+        /* 서브태스크들 제거 */
+        const { subtasks = [] } = tasks[id] || {}
+        update('tasks')(
+          subtasks.reduce((acc, cur) => ({ ...acc, [cur]: null }), {})
+        )
+
+        /* 제거 */
+        remove(`tasks/${id}`)
+      }
     }
   }
 
+  /* Task */
   setTask = (key, value) => {
     const { hover } = this.state
     const { editTask } = this.getFunctions()
@@ -79,6 +109,13 @@ class App extends Component {
 
   setSize = size => this.setTask('size', size)
 
+  deleteTask = () => {
+    const { tasks, hover } = this.state
+    const { deleteTask } = this.getFunctions()
+    window.confirm(`Delete ${tasks[hover].name}?`) && deleteTask(hover)
+  }
+
+  /* state */
   setCurrent = current => this.setState({ current })
   resetCurrent = () => this.setCurrent()
 
