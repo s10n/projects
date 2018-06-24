@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { object } from 'prop-types'
+import { cond, equals } from 'ramda'
 import uuidv4 from 'uuid/v4'
 import './App.css'
 import Modal from 'react-modal'
@@ -19,9 +20,26 @@ class App extends Component {
     const onValue = snap => this.setState(snap.val() || this.InitialData)
     const projectsRef = this.props.db.ref()
     projectsRef.on('value', onValue)
+    document.addEventListener('keypress', this.handleKeyPress)
   }
 
-  fn = () => {
+  handleKeyPress = event =>
+    cond([
+      [equals('4'), () => this.setImportant(1)],
+      [equals('3'), () => this.setImportant(0)],
+      [equals('2'), () => this.setImportant(-1)],
+      [equals('='), () => this.setSize(1)],
+      [equals('0'), () => this.setSize(null)],
+      [equals('-'), () => this.setSize(-1)]
+    ])(event.key)
+
+  getContext = () => ({
+    ...this.state,
+    setCurrent: this.setCurrent,
+    setHover: this.setHover
+  })
+
+  getFunctions = () => {
     const set = ref => data => db.ref(ref).set(data, handleError)
     const update = ref => data => db.ref(ref).update(data, handleError)
 
@@ -46,21 +64,29 @@ class App extends Component {
     }
   }
 
+  setTask = (key, value) => {
+    const { hover } = this.state
+    const { editTask } = this.getFunctions()
+    hover && editTask(hover)({ [key]: value })
+  }
+
+  setImportant = important => {
+    const { tasks, hover } = this.state
+    const task = tasks[hover]
+    this.setTask('important', task.important === important ? null : important)
+  }
+
+  setSize = size => this.setTask('size', size)
+
   setCurrent = current => this.setState({ current })
   resetCurrent = () => this.setCurrent()
 
   setHover = hover => this.setState({ hover })
   resetHover = () => this.setHover()
 
-  getContext = () => ({
-    ...this.state,
-    setCurrent: this.setCurrent,
-    setHover: this.setHover
-  })
-
   render() {
     const { list, projects, tasks, current } = this.state
-    const fn = this.fn()
+    const fn = this.getFunctions()
     const currentTask = tasks[current]
 
     return (
