@@ -47,4 +47,5 @@ textarea {
   line-height: inherit;
   margin: 0;
   outline: 0;
+  width: 100%;
 }
