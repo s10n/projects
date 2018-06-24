@@ -26,15 +26,17 @@ class App extends Component {
     const update = ref => data => db.ref(ref).update(data, handleError)
 
     const { db } = this.props
-    const { projects } = this.state
+    const { projects, tasks } = this.state
 
     return {
       addProject: set(`projects/${uuidv4()}`),
-      addTask: project => data => {
+      addTask: ({ project, task }) => data => {
         const id = uuidv4()
-        const { list = [] } = projects[project]
+        const { list = [] } = projects[project] || {}
+        const { subtasks = [] } = tasks[task] || {}
         set(`tasks/${id}`)(data)
-        update(`projects/${project}`)({ list: [...list, id] })
+        project && update(`projects/${project}`)({ list: [...list, id] })
+        task && update(`tasks/${task}`)({ subtasks: [...subtasks, id] })
       },
       editTask: id => update(`tasks/${id}`)
     }

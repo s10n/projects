@@ -16,7 +16,13 @@ const defaultProps = {
 
 const Main = ({ projects, tasks, fn, style: variant }) => {
   const renderProject = ([id, project]) => {
-    const props = { ...project, id, tasks, addTask: fn.addTask(id) }
+    const props = {
+      ...project,
+      id,
+      tasks,
+      addTask: fn.addTask({ project: id })
+    }
+
     return <Project {...props} key={id} />
   }
 
