@@ -19,8 +19,14 @@ const Tasks = ({ list, onAddTask, onTaskClick }) => (
   <TaskContext.Consumer>
     {({ tasks }) => {
       const renderTask = id => {
-        const onClick = () => onTaskClick(id)
-        return <Task id={id} {...tasks[id]} onClick={onClick} key={id} />
+        const task = {
+          ...tasks[id],
+          id,
+          style: style.Task,
+          onClick: () => onTaskClick(id)
+        }
+
+        return <Task {...task} key={id} />
       }
 
       return (
@@ -35,5 +41,9 @@ const Tasks = ({ list, onAddTask, onTaskClick }) => (
 
 Tasks.propTypes = propTypes
 Tasks.defaultProps = defaultProps
+
+const style = {
+  Task: { marginBottom: 5 }
+}
 
 export default Tasks

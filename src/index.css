@@ -21,6 +21,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-weight: normal;
   margin: 0;
 }
 
@@ -45,4 +46,5 @@ textarea {
   font-size: inherit;
   line-height: inherit;
   margin: 0;
+  outline: 0;
 }

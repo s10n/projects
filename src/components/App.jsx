@@ -24,6 +24,7 @@ class App extends Component {
   }
 
   handleKeyPress = event =>
+    this.state.hover &&
     cond([
       [equals('4'), () => this.setImportant(1)],
       [equals('3'), () => this.setImportant(0)],
@@ -67,7 +68,7 @@ class App extends Component {
   setTask = (key, value) => {
     const { hover } = this.state
     const { editTask } = this.getFunctions()
-    hover && editTask(hover)({ [key]: value })
+    editTask(hover)({ [key]: value })
   }
 
   setImportant = important => {

@@ -35,7 +35,7 @@ Main.defaultProps = defaultProps
 const style = {
   display: 'flex',
   flexWrap: 'wrap',
-  project: { width: 100 / 3 + '%' }
+  project: { width: 100 / 3 + '%', padding: 10 }
 }
 
 export default Main
