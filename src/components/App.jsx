@@ -23,15 +23,20 @@ class App extends Component {
 
   fn = () => {
     const set = (ref, list) => data => {
-      const priority = Object.keys(list).length
-      return this.props.db.ref(ref).set({ ...data, priority }, handleError)
+      const priority = !!list && Object.keys(list).length
+      const next = Object.assign(data, !!list && { priority })
+      return db.ref(ref).set(next, handleError)
     }
 
+    const update = ref => data => db.ref(ref).update(data, handleError)
+
+    const { db } = this.props
     const { projects, tasks } = this.state
 
     return {
       addProject: set(`projects/${uuidv4()}`, projects),
-      addTask: id => set(`tasks/${id}/${uuidv4()}`, tasks[id] || {})
+      addTask: id => set(`tasks/${id}/${uuidv4()}`, tasks[id] || {}),
+      editTask: ({ project, task }) => update(`tasks/${project}/${task}`)
     }
   }
 
@@ -58,7 +63,7 @@ class App extends Component {
 
         {!!currentTask && (
           <Modal isOpen={!!currentTask} onRequestClose={this.resetCurrent}>
-            <TaskDetails {...currentTask} />
+            <TaskDetails {...currentTask} id={current} fn={fn} />
           </Modal>
         )}
       </Fragment>
