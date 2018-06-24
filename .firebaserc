@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "projects-production",
+    "dev": "projects-dev-208112"
+  }
+}
