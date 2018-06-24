@@ -12,7 +12,7 @@ Modal.setAppElement('#projects')
 class App extends Component {
   static propTypes = { db: object.isRequired }
 
-  InitialData = { projects: {}, tasks: {} }
+  InitialData = { list: [], projects: {}, tasks: {} }
   state = { ...this.InitialData, current: null }
 
   componentDidMount() {
@@ -26,10 +26,14 @@ class App extends Component {
     const update = ref => data => db.ref(ref).update(data, handleError)
 
     const { db } = this.props
-    const { projects, tasks } = this.state
+    const { list, projects, tasks } = this.state
 
     return {
-      addProject: set(`projects/${uuidv4()}`),
+      addProject: data => {
+        const id = uuidv4()
+        set(`projects/${id}`)(data)
+        set('list')([...list, id])
+      },
       addTask: ({ project, task }) => data => {
         const id = uuidv4()
         const { list = [] } = projects[project] || {}
@@ -46,14 +50,14 @@ class App extends Component {
   resetCurrent = () => this.setCurrent()
 
   render() {
-    const { projects, tasks, current } = this.state
+    const { list, projects, tasks, current } = this.state
     const fn = this.fn()
     const currentTask = tasks[current]
 
     return (
       <TaskContext.Provider value={{ tasks, setCurrent: this.setCurrent }}>
         <Header fn={fn} style={style.header} />
-        <Main projects={projects} style={style.main} fn={fn} />
+        <Main list={list} projects={projects} style={style.main} fn={fn} />
 
         {!!current && (
           <Modal isOpen={!!current} onRequestClose={this.resetCurrent}>
