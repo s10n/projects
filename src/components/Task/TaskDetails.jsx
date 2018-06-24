@@ -1,21 +1,10 @@
 import React from 'react'
-import { string, arrayOf } from 'prop-types'
-import { fn } from '../../constants/propTypes'
+import { task, defaultTask, fn } from '../../constants/propTypes'
 import Form from '../Form'
 import Tasks from './Tasks'
 
-const propTypes = {
-  id: string.isRequired,
-  name: string.isRequired,
-  subtasks: arrayOf(string),
-  description: string,
-  fn
-}
-
-const defaultProps = {
-  subtasks: [],
-  description: ''
-}
+const propTypes = { ...task, fn }
+const defaultProps = defaultTask
 
 const TaskDetails = ({ id, name, subtasks, description, fn }) => (
   <article>
