@@ -22,28 +22,22 @@ class App extends Component {
   }
 
   fn = () => {
-    const set = (ref, list) => data => {
-      const priority = !!list && Object.keys(list).length
-      const next = Object.assign(data, !!list && { priority })
-      return db.ref(ref).set(next, handleError)
-    }
-
+    const set = ref => data => db.ref(ref).set(data, handleError)
     const update = ref => data => db.ref(ref).update(data, handleError)
 
     const { db } = this.props
-    const { projects, tasks } = this.state
+    const { projects } = this.state
 
     return {
-      addProject: set(`projects/${uuidv4()}`, projects),
-      addTask: id => set(`tasks/${id}/${uuidv4()}`, tasks[id] || {}),
-      editTask: ({ project, task }) => update(`tasks/${project}/${task}`)
+      addProject: set(`projects/${uuidv4()}`),
+      addTask: project => data => {
+        const id = uuidv4()
+        const { list = [] } = projects[project]
+        set(`tasks/${id}`)(data)
+        update(`projects/${project}`)({ list: [...list, id] })
+      },
+      editTask: id => update(`tasks/${id}`)
     }
-  }
-
-  getCurrent = () => {
-    const { tasks, current } = this.state
-    const { project, task } = current || {}
-    return !!(project && task) && tasks[project][task]
   }
 
   setCurrent = current => this.setState({ current })
@@ -52,7 +46,7 @@ class App extends Component {
   render() {
     const { current, ...rest } = this.state
     const fn = this.fn()
-    const currentTask = this.getCurrent()
+    const currentTask = rest.tasks[current]
 
     return (
       <Fragment>
