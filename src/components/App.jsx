@@ -13,7 +13,7 @@ class App extends Component {
   static propTypes = { db: object.isRequired }
 
   InitialData = { list: [], projects: {}, tasks: {} }
-  state = { ...this.InitialData, current: null }
+  state = { ...this.InitialData, current: null, hover: null }
 
   componentDidMount() {
     const onValue = snap => this.setState(snap.val() || this.InitialData)
@@ -49,13 +49,22 @@ class App extends Component {
   setCurrent = current => this.setState({ current })
   resetCurrent = () => this.setCurrent()
 
+  setHover = hover => this.setState({ hover })
+  resetHover = () => this.setHover()
+
+  getContext = () => ({
+    ...this.state,
+    setCurrent: this.setCurrent,
+    setHover: this.setHover
+  })
+
   render() {
     const { list, projects, tasks, current } = this.state
     const fn = this.fn()
     const currentTask = tasks[current]
 
     return (
-      <TaskContext.Provider value={{ tasks, setCurrent: this.setCurrent }}>
+      <TaskContext.Provider value={this.getContext()}>
         <Header fn={fn} style={style.header} />
         <Main list={list} projects={projects} style={style.main} fn={fn} />
 

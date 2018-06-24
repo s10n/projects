@@ -20,7 +20,7 @@ const Tasks = ({ list, onAddTask, onTaskClick }) => (
     {({ tasks }) => {
       const renderTask = id => {
         const onClick = () => onTaskClick(id)
-        return <Task {...tasks[id]} onClick={onClick} key={id} />
+        return <Task id={id} {...tasks[id]} onClick={onClick} key={id} />
       }
 
       return (
