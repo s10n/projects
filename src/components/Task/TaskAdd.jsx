@@ -5,7 +5,12 @@ import Form from '../Form'
 const propTypes = { onSubmit: func.isRequired }
 
 const ProjectAdd = ({ onSubmit }) => (
-  <Form fields={['name']} onSubmit={onSubmit} />
+  <Form
+    fields={[{ name: 'name' }]}
+    onSubmit={onSubmit}
+    shouldNotEmptyOnSubmit
+    shouldResetOnSubmit
+  />
 )
 
 ProjectAdd.propTypes = propTypes
