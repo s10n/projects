@@ -33,9 +33,16 @@ const Task = ({ id, name, important, size, subtasks, isSubtask, ...rest }) => {
             hover === id && style.hover
           ),
           onClick,
-          onMouseEnter: () => setHover(id),
-          onMouseDown: () => setHover(),
-          onMouseLeave: () => setHover()
+          onMouseOver: e => {
+            e.stopPropagation()
+            setHover(id)
+          },
+          onMouseLeave: () => {
+            setHover()
+          },
+          onMouseDown: () => {
+            setHover()
+          }
         }
 
         return (
